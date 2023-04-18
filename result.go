@@ -35,9 +35,19 @@ func (opt Result[T]) UnwrapError() error {
 	return opt.err
 }
 
-func (opt Result[T]) Then(f func(*T) Result[T]) Result[T] {
+func (opt Result[T]) Then(f func(*T) *Result[T]) Result[T] {
 	if opt.IsOk() {
-		return f(opt.val)
+		result := f(opt.val)
+		if result != nil {
+			return *result
+		}
+	}
+	return opt
+}
+
+func (opt Result[T]) Fail(f func(e error)) Result[T] {
+	if !opt.IsOk() {
+		f(opt.err)
 	}
 	return opt
 }
