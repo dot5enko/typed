@@ -31,6 +31,16 @@ func (opt Result[T]) Unwrap() T {
 	return *opt.val
 }
 
+func (opt Result[T]) UnwrapOrDefault(def T) T {
+
+	if opt.IsOk() {
+		return opt.Unwrap()
+	} else {
+		return def
+	}
+
+}
+
 func (opt Result[T]) UnwrapError() error {
 	return opt.err
 }
