@@ -1,16 +1,34 @@
 package typed
 
+import (
+	"fmt"
+	"runtime/debug"
+)
+
+var CaptureStackOnPanic = true
+
 type PanickedError struct {
 	Cause any
+	Stack string
 }
 
-func (PanickedError) Error() string {
-	return "function panicked"
+func (pe PanickedError) Error() string {
+	return fmt.Sprintf("function panicked: %v", pe.Cause)
 }
 
 func RecoverIfPanic[T any](resultReference *Result[T]) {
 	rec := recover()
 	if rec != nil {
-		*resultReference = ResultFailed[T](PanickedError{Cause: rec})
+
+		stack := ""
+
+		if CaptureStackOnPanic {
+			stack = string(debug.Stack())
+		}
+
+		*resultReference = ResultFailed[T](PanickedError{
+			Cause: rec,
+			Stack: stack,
+		})
 	}
 }

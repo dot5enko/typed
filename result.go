@@ -41,8 +41,26 @@ func (opt Result[T]) UnwrapOrDefault(def T) T {
 
 }
 
+func (opt Result[T]) UnwrapOrPanic(msg string) T {
+	if opt.IsOk() {
+		return opt.Unwrap()
+	} else {
+		panic(msg)
+	}
+}
+
 func (opt Result[T]) UnwrapError() error {
 	return opt.err
+}
+
+func (opt Result[T]) Accept(f func(*T)) (nextResult Result[T]) {
+
+	defer RecoverIfPanic(&nextResult)
+
+	if opt.IsOk() {
+		f(opt.val)
+	}
+	return opt
 }
 
 func (opt Result[T]) Then(f func(*T) *Result[T]) Result[T] {
