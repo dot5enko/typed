@@ -1,7 +1,3 @@
-### set of typed data types 
-### utils, and other good code 
-### that can be used in almost all codebase
-
-##### another copy of result data type
+### set of reusable  data types, utils, and other good code that can be used to build better code faster
 
 ###### inspired by rust
