@@ -55,7 +55,9 @@ func (opt Result[T]) UnwrapError() error {
 
 func (opt Result[T]) Accept(f func(*T)) (nextResult Result[T]) {
 
-	defer RecoverIfPanic(&nextResult)
+	defer RecoverPanic(func(pe *PanicError) {
+		nextResult = ResultFailed[T](pe)
+	})
 
 	if opt.IsOk() {
 		f(opt.val)
