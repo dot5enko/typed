@@ -20,7 +20,7 @@ func (r Result[T]) String() string {
 
 func (r Result[T]) MarshalJSON() ([]byte, error) {
 	obj := new(T)
-	return []byte(fmt.Sprintf("#result[%s]{has: %v}", reflect.ValueOf(obj).Type().Name(), r.has)), nil
+	return []byte(fmt.Sprintf("\"#result[%s]{has: %v}\"", reflect.ValueOf(obj).Type().Name(), r.has)), nil
 }
 
 func (opt Result[T]) IsOk() bool {
