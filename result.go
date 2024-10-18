@@ -80,9 +80,14 @@ func (opt Result[T]) UnwrapClassic() (obj T, e error) {
 
 func (opt Result[T]) Accept(f func(*T)) (nextResult Result[T]) {
 
-	defer RecoverPanic(func(pe *PanicError) {
-		nextResult = ResultFailed[T](pe)
-	})
+	defer func() {
+
+		rec := recover()
+
+		if rec != nil {
+			nextResult = ResultFailed[T](fmt.Errorf("panicked while accepting result ok: %v", rec))
+		}
+	}()
 
 	if opt.IsOk() {
 		f(opt.val)
