@@ -118,6 +118,12 @@ func (opt *Result[T]) SetOk(v T) *Result[T] {
 	return opt
 }
 
+func (opt *Result[T]) SetOkRef(v *T) *Result[T] {
+	opt.val = v
+	opt.has = true
+	return opt
+}
+
 func (opt *Result[T]) SetFail(v error) *Result[T] {
 	opt.err = v
 	opt.has = false
