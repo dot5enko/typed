@@ -90,6 +90,19 @@ func (opt Result[T]) Accept(f func(*T)) (nextResult Result[T]) {
 	return opt
 }
 
+func (opt Result[T]) Success(f func()) (nextResult Result[T]) {
+
+	defer RecoverPanic(func(pe *PanicError) {
+		nextResult = ResultFailed[T](pe)
+	})
+
+	if opt.IsOk() {
+		f()
+	}
+
+	return opt
+}
+
 func (opt Result[T]) Then(f func(*T) *Result[T]) Result[T] {
 	if opt.IsOk() {
 		result := f(opt.val)
